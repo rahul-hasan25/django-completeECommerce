@@ -2,14 +2,14 @@ from django.shortcuts import render
 from store.models import Product, ReviewRating
 
 def home(request):
-    products = Product.objects.all().filter(is_available=True).order_by('created_date')
+    # Get all available products
+    products = Product.objects.filter(is_available=True).order_by('created_date')
     
-    # Get the reviews
+    # Attach reviews to each product
     for product in products:
-        reviews = ReviewRating.objects.filter(product_id=product.id, status=True)
+        product.reviews = ReviewRating.objects.filter(product_id=product.id, status=True)
     
     context = {
-        'products' : products,
-        'reviews'  : reviews,
+        'products': products,
     }
-    return render(request,'home.html', context)
+    return render(request, 'home.html', context)
